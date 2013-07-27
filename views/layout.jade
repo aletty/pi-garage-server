@@ -9,7 +9,7 @@ html
     link(rel='stylesheet', href='/stylesheets/normalize.css')
     script(src='/javascripts/vendor/custom.modernizr.js')
       
-  body
+  body.offcanvas
     nav.top-bar
       ul.title-area
         li.name
@@ -24,9 +24,13 @@ html
             if !user
               a(href='/login') Log In
             else
-              a(href='/logout') Log Out
-    block content
+              li.has-dropdown
+                a(href='#') #{user.username}
+                ul.dropdown
+                  li.has-dropdown
+                    a(href='/logout') Log Out
     script(src='/javascripts/vendor/jquery.js')    
     script(src="/javascripts/foundation.min.js")
+    block content
     script.
       $(document).foundation();

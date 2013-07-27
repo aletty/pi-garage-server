@@ -60,3 +60,14 @@ app.get('/createUsers', devRoute.createUsers);
 
 
 server.listen(app.get('port'));
+
+//real time notification logic
+io.of('/notify').on('connection', function (socket) {
+  socket.once('user', function(userData){
+    socket.join(userData.name);
+  });
+
+  socket.on('push', function(data){
+    socket.broadcast.to(data.name, data).emit('update', data);
+  })
+});
