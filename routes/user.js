@@ -27,6 +27,11 @@ exports.postRegister = function(req, res) {
       console.log(err);
       return res.render('register', {user: user});
     }
+    req.login(user, function(err) {
+      if (err) { console.log(err); }
+      return res.redirect('/');
+    });
+
     res.redirect('/');
   })
 }

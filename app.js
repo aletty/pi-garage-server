@@ -80,6 +80,13 @@ app.get('/logout', userRoute.logout);
 
 server.listen(app.get('port'));
 
+//heroku socket.io config settings
+io.configure(function () { 
+  io.set("transports", ["xhr-polling"]); 
+  io.set("polling duration", 10); 
+});
+
+
 //real time notification logic
 io.of('/notify').on('connection', function (socket) {
   socket.once('user', function(userData){
