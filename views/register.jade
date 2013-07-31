@@ -1,0 +1,20 @@
+extends layout
+
+block content
+  form(action="/register", method="post")
+    .row
+      .small-12.columns
+        h3 Register
+    .row
+      .small-6.columns
+        input(type="text", name="name", placeholder="Name")
+      .small-6.columns
+        input(type="text", name="email", placeholder="Email")
+    .row
+      .small-6.columns
+        input(type="text", name="username", placeholder="Username")
+      .small-6.columns
+        input(type="password", name="password", placeholder="Password")
+    .row
+      .small-12.columns
+        button(type="Submit") Register

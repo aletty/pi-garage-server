@@ -13,26 +13,30 @@ var express = require('express')
   , models = require('./models/models.js')
   , path = require('path')
   , passport = require('passport')
-  , pass = require('./routes/pass.js')
   , mongoose = require('mongoose');
 
 // all environments
 app.configure(function(){
-    app.set('port', process.env.PORT || 3000);
+    app.set('port', process.env.PORT || 4000);
     app.set('views', __dirname + '/views');
     app.set('view engine', 'jade');
     app.use(express.favicon());
+
     app.use(express.logger('dev'));
     app.use(express.bodyParser());
+    app.use(express.methodOverride());
+
     app.use(express.cookieParser());
     app.use(express.session({secret : 'aboys'}));
-    app.use(express.methodOverride());
+
     //passport initialization
     app.use(passport.initialize());
     app.use(passport.session());
+
     app.use(app.router);
     app.use(express.static(path.join(__dirname, 'public')));
 
+    //mongoDB settings
     var uristring = process.env.MONGODB_URI || 
     process.env.MONGOLAB_URI ||
     'mongodb://localhost/garage';
@@ -52,12 +56,27 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-app.get('/', pass.ensureAuthenticated, routes.index);
-app.get('/login', userRoute.getLogin);
-app.post('/login', userRoute.postLogin);
-app.get('/logout', userRoute.logout);
-app.get('/createUsers', devRoute.createUsers);
+//configure passport
+passport.use(models.userModel.createStrategy());
+passport.serializeUser(models.userModel.serializeUser());
+passport.deserializeUser(models.userModel.deserializeUser());
 
+//passport middleware
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {return next(); }
+  res.redirect('/login');
+}
+
+//routes
+app.get('/', ensureAuthenticated, routes.index);
+
+app.get('/login', userRoute.getLogin);
+app.post('/login', passport.authenticate('local'), userRoute.postLogin);
+
+app.get('/register',userRoute.getRegister);
+app.post('/register', userRoute.postRegister);
+
+app.get('/logout', userRoute.logout);
 
 server.listen(app.get('port'));
 
@@ -71,3 +90,9 @@ io.of('/notify').on('connection', function (socket) {
     socket.broadcast.to(data.name, data).emit('update', data);
   })
 });
+
+io.of('/pi').on('connection', function (socket) {
+  socket.on('test', function(){
+    socket.broadcast.emit('test pi');
+  })
+})

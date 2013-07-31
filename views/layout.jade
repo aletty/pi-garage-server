@@ -20,17 +20,45 @@ html
             span
       section.top-bar-section
         ul.right
-          li
             if !user
-              a(href='/login') Log In
+              li
+                a(href='/register') Register
+              li.divider 
+              li
+                a(href='/login') Log In
             else
               li.has-dropdown
-                a(href='#') #{user.username}
+                a(href='#') #{user.name}
                 ul.dropdown
-                  li.has-dropdown
+                  li
                     a(href='/logout') Log Out
+
+    .row#notifications
     script(src='/javascripts/vendor/jquery.js')    
     script(src="/javascripts/foundation.min.js")
+    script(src='/socket.io/socket.io.js')
     block content
+    if (user)
+      script.
+        var notify = io.connect('http://localhost:4000/notify');
+
+        notify.on('connect', function() {
+          console.log('connected');
+          notify.emit('user', {name: '#{user.username}'});
+        });
+
+        notify.on('update', function(data) {
+          console.log(data);
+          if (data.type == 'info'){
+            $('#notifications').append('<div class="small-12 columns"><div data-alert class="alert-box secondary">'+ data.notification +'<a href="#" class="close">&times;</a></div></div>');
+          }
+          if (data.type == 'warning'){
+            $('#notifications').append('<div class="small-12 columns"><div data-alert class="alert-box alert">'+ data.notification +'<a href="#" class="close">&times;</a></div></div>');
+          }
+          if (data.type == 'success'){
+            $('#notifications').append('<div class="small-12 columns"><div data-alert class="alert-box success">'+ data.notification +'<a href="#" class="close">&times;</a></div></div>');
+          }          
+        });
+
     script.
       $(document).foundation();
