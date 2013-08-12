@@ -98,8 +98,9 @@ io.of('/notify').on('connection', function (socket) {
   })
 });
 
+//communication with pi
 io.of('/pi').on('connection', function (socket) {
-  socket.on('test', function(){
-    socket.broadcast.emit('test pi');
-  })
+  socket.on('garage', function(){
+    socket.broadcast.emit('start garage');
+  });
 })

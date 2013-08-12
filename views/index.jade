@@ -9,8 +9,8 @@ block content
     var pi = io.connect('http://aletty.herokuapp.com/pi');
     pi.on('connect', function(){
       console.log('connected');
-    })
+    });
 
     $('#open').click(function(){
-      pi.emit('test');  
-    })
+      pi.emit('garage');  
+    });
