@@ -95,7 +95,7 @@ io.of('/notify').on('connection', function (socket) {
 
   socket.on('push', function(data){
     socket.broadcast.to(data.name, data).emit('update', data);
-  })
+  });
 });
 
 //communication with pi
@@ -103,4 +103,4 @@ io.of('/pi').on('connection', function (socket) {
   socket.on('garage', function(){
     socket.broadcast.emit('start garage');
   });
-})
+});

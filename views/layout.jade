@@ -57,7 +57,10 @@ html
           }
           if (data.type == 'success'){
             $('#notifications').append('<div class="small-12 columns"><div data-alert class="alert-box success">'+ data.notification +'<a href="#" class="close">&times;</a></div></div>');
-          }          
+          }
+          if (data.type == 'garage'){
+            $('#garage').toggleClass('alert');
+          }
         });
 
     script.
