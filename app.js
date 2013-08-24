@@ -94,7 +94,11 @@ io.of('/notify').on('connection', function (socket) {
   });
 
   socket.on('push', function(data){
-    socket.broadcast.to(data.name, data).emit('update', data);
+    if (data.name){
+      socket.broadcast.to(data.name, data).emit('update', data);
+    } else {
+      socket.broadcast.emit('update', data);
+    }
   });
 });
 
